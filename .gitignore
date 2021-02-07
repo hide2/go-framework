@@ -1,0 +1,14 @@
+*~
+*.pyc
+bin/
+server
+server/.vscode/
+.vscode/
+configs/local.toml
+.devops.yaml
+configs/commit
+cmd/server/__debug_bin
+test/run1.sh
+.idea/
+log/
+dist/
