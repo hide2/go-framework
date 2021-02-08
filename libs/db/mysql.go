@@ -3,6 +3,7 @@ package db
 import (
 	"log"
 	"os"
+	. "server/libs/config"
 	"time"
 
 	"gorm.io/driver/mysql"
@@ -13,7 +14,11 @@ import (
 
 var DB *gorm.DB
 
-func InitDB(env string, write string, read string) {
+func init() {
+	DB = initDB(GlobalConfig.Env, GlobalConfig.Mysql.Write, GlobalConfig.Mysql.Read)
+}
+
+func initDB(env string, write string, read string) *gorm.DB {
 	// https://gorm.io/zh_CN/docs/dbresolver.html
 	// 建立读写分离连接池
 	dsn_master := write
@@ -33,8 +38,8 @@ func InitDB(env string, write string, read string) {
 			LogLevel:      level,           // Log level
 		},
 	)
-	DB, _ = gorm.Open(mysql.Open(dsn_master), &gorm.Config{Logger: newLogger})
-	DB.Use(dbresolver.Register(dbresolver.Config{
+	db, _ := gorm.Open(mysql.Open(dsn_master), &gorm.Config{Logger: newLogger})
+	db.Use(dbresolver.Register(dbresolver.Config{
 		Sources:  []gorm.Dialector{mysql.Open(dsn_master)},
 		Replicas: []gorm.Dialector{mysql.Open(dsn_slave)},
 		Policy:   dbresolver.RandomPolicy{},
@@ -43,4 +48,5 @@ func InitDB(env string, write string, read string) {
 		SetConnMaxLifetime(24 * time.Hour).
 		SetMaxIdleConns(100).
 		SetMaxOpenConns(200))
+	return db
 }

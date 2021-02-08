@@ -1,11 +1,13 @@
 package logger
 
 import (
+	"fmt"
 	"net"
 	"net/http"
 	"net/http/httputil"
 	"os"
 	"runtime/debug"
+	. "server/libs/config"
 	"strings"
 	"time"
 
@@ -18,8 +20,14 @@ import (
 var Logger *zap.Logger
 var SugarLogger *zap.SugaredLogger
 
-// InitLogger 初始化Logger
-func InitLogger(level string, filename string, maxSize, maxBackup, maxAge int) (err error) {
+func init() {
+	if err := initLogger("info", GlobalConfig.Accesslog, 500, 10, 10); err != nil {
+		fmt.Printf("init logger failed, err:%v\n", err)
+		return
+	}
+}
+
+func initLogger(level string, filename string, maxSize, maxBackup, maxAge int) (err error) {
 	writeSyncer := getLogWriter(filename, maxSize, maxBackup, maxAge)
 	encoder := getEncoder()
 	var l = new(zapcore.Level)

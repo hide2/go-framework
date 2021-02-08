@@ -3,15 +3,17 @@ package db
 import (
 	"context"
 
+	. "server/libs/config"
+
 	"github.com/go-redis/redis/v8"
 )
 
 var Ctx = context.Background()
 var Redis *redis.Client
 
-func InitRedis(addr string) {
+func init() {
 	Redis = redis.NewClient(&redis.Options{
-		Addr:     addr,
+		Addr:     GlobalConfig.Redis,
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
