@@ -15,25 +15,15 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-// 日志相关配置
-type LogConfig struct {
-	Level      string
-	Filename   string
-	MaxSize    int // MB
-	MaxAge     int // days
-	MaxBackups int // retain log files
-}
-
 var Logger *zap.Logger
 var SugarLogger *zap.SugaredLogger
 
 // InitLogger 初始化Logger
-func InitLogger(level string, filename string, maxsize int, maxage int, maxbackup int) (err error) {
-	cfg := LogConfig{level, filename, maxsize, maxage, maxbackup}
-	writeSyncer := getLogWriter(cfg.Filename, cfg.MaxSize, cfg.MaxBackups, cfg.MaxAge)
+func InitLogger(level string, filename string, maxSize, maxBackup, maxAge int) (err error) {
+	writeSyncer := getLogWriter(filename, maxSize, maxBackup, maxAge)
 	encoder := getEncoder()
 	var l = new(zapcore.Level)
-	err = l.UnmarshalText([]byte(cfg.Level))
+	err = l.UnmarshalText([]byte(level))
 	if err != nil {
 		return
 	}
