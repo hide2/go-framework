@@ -12,3 +12,4 @@ test/run1.sh
 .idea/
 log/
 dist/
+.DS_Store
