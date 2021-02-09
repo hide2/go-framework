@@ -2,7 +2,6 @@ package main
 
 import (
 	"os"
-
 	"server/libs/auth"
 	. "server/libs/config"
 	"server/libs/logger"
@@ -31,10 +30,10 @@ func main() {
 	engine.Use(auth.Auth())
 
 	// 自定义Logger
-	engine.Use(logger.GinLogger(logger.Logger), logger.GinRecovery(logger.Logger, true))
+	engine.Use(logger.GinLogger())
 
-	// 异常崩溃处理
-	engine.Use(gin.Recovery())
+	// 自定义Recovery
+	engine.Use(logger.GinRecovery())
 
 	// 路由配置
 	routes.InitRoutes(engine)
