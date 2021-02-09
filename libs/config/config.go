@@ -13,22 +13,21 @@ type MySQLConfig struct {
 	Read  string
 }
 type Config struct {
-	Env       string
-	Listen    string
-	Mysql     MySQLConfig
-	Redis     string
-	Accesslog string
-	ErrorLog  string
+	Env           string
+	Listen        string
+	Mysql         MySQLConfig
+	Redis         string
+	Accesslog     string
+	ErrorLog      string
+	ErrorDingTalk string
 }
 
 var GlobalConfig *Config
 
 func init() {
 	// 解析命令行参数
-	var configFile, accessLog, errorLog string
+	var configFile string
 	flag.StringVar(&configFile, "c", "config.json", "set configuration `file`")
-	flag.StringVar(&accessLog, "a", "/tmp/access.log", "set access log `file`")
-	flag.StringVar(&errorLog, "e", "/tmp/error.log", "set error log `file`")
 	flag.Parse()
 
 	// 加载配置文件config.json
@@ -43,7 +42,5 @@ func init() {
 		fmt.Println(err)
 		return
 	}
-	config.Accesslog = accessLog
-	config.ErrorLog = errorLog
 	GlobalConfig = &config
 }

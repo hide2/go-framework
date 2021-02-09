@@ -1,6 +1,8 @@
 package logger
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httputil"
@@ -85,17 +87,40 @@ func GinLogger() gin.HandlerFunc {
 func GinRecovery() gin.HandlerFunc {
 	return gin.CustomRecovery(func(c *gin.Context, recovered interface{}) {
 		if err, ok := recovered.(string); ok {
-			c.String(http.StatusInternalServerError, fmt.Sprintf("error: %s", err))
-			httpRequest, _ := httputil.DumpRequest(c.Request, false)
+			// 打印错误日志
+			httpRequest, _ := httputil.DumpRequest(c.Request, true)
+			request := string(httpRequest)
+			stack := string(debug.Stack())
 			Logger.Error("[Recovery from panic]",
 				zap.Any("error", err),
-				zap.String("request", string(httpRequest)),
-				zap.String("stack", string(debug.Stack())),
+				zap.String("request", request),
+				zap.String("stack", stack),
 			)
-			// todo 推送钉钉
+			// 推送钉钉
+			if GlobalConfig.ErrorDingTalk != "" {
+				var s = fmt.Sprintf("[%s][ERROR] Request: %s Stack: %s", GlobalConfig.Env, request, stack)
+				DingTalk(s)
+			}
 		}
 		c.AbortWithStatus(http.StatusInternalServerError)
 	})
+}
+
+func DingTalk(s string) {
+	content, data := make(map[string]string), make(map[string]interface{})
+	content["content"] = s
+
+	data["msgtype"] = "text"
+	data["text"] = content
+	b, _ := json.Marshal(data)
+
+	resp, err := http.Post(GlobalConfig.ErrorDingTalk,
+		"application/json",
+		bytes.NewBuffer(b))
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer resp.Body.Close()
 }
 
 func Debug(args ...interface{}) {
