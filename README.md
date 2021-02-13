@@ -63,7 +63,7 @@ routes/config.go
 config.json
 ```
 {
-    "env": "prod",
+    "env": "local",
     "listen": ":8080",
     "mysql": {
         "write": "root:root@tcp(127.0.0.1:3306)/test?charset=utf8mb4&parseTime=True&loc=Local",
@@ -71,7 +71,8 @@ config.json
     },
     "redis": "localhost:6379",
     "accesslog": "/tmp/access.log",
-    "errorLog": "/tmp/error.log"
+    "errorLog": "/tmp/error.log",
+    "errorDingTalk": "https://oapi.dingtalk.com/robot/send?access_token=xxx"
 }
 ```
 
