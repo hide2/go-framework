@@ -86,21 +86,23 @@ func GinLogger() gin.HandlerFunc {
 // GinRecovery recover掉项目可能出现的panic，并使用zap记录相关日志，并推送钉钉消息
 func GinRecovery() gin.HandlerFunc {
 	return gin.CustomRecovery(func(c *gin.Context, recovered interface{}) {
-		if err, ok := recovered.(string); ok {
-			// 打印错误日志
-			httpRequest, _ := httputil.DumpRequest(c.Request, true)
-			request := string(httpRequest)
-			stack := string(debug.Stack())
-			Logger.Error("[Recovery from panic]",
-				zap.Any("error", err),
-				zap.String("request", request),
-				zap.String("stack", stack),
-			)
-			// 推送钉钉
-			if GlobalConfig.ErrorDingTalk != "" {
-				var s = fmt.Sprintf("[%s][ERROR] Request: %s Stack: %s", GlobalConfig.Env, request, stack)
-				DingTalk(s)
-			}
+		if GlobalConfig.Env == "local" || GlobalConfig.Env == "dev" || GlobalConfig.Env == "test" {
+			fmt.Println("[GinRecovery->error]", recovered)
+		}
+		// 打印错误日志
+		httpRequest, _ := httputil.DumpRequest(c.Request, true)
+		request := string(httpRequest)
+		stack := string(debug.Stack())
+		Logger.Error("[Recovery from panic]",
+			zap.Any("error", recovered),
+			zap.String("request", request),
+			zap.String("stack", stack),
+		)
+
+		// 推送钉钉
+		if GlobalConfig.Env == "prod" && GlobalConfig.ErrorDingTalk != "" {
+			var s = fmt.Sprintf("[%s][ERROR] Request: %s Stack: %s", GlobalConfig.Env, request, stack)
+			DingTalk(s)
 		}
 		c.AbortWithStatus(http.StatusInternalServerError)
 	})
