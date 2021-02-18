@@ -1,18 +1,23 @@
-package controller
+package handler
 
 import (
 	"encoding/json"
 	"net/http"
-	. "server/libs/db"
-	. "server/model"
 	"strconv"
+
+	. "server/internal"
+	. "server/pkg/db"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
 )
 
+type UserHandler struct {
+	BaseHandler
+}
+
 // ListUsers action
-func ListUsers(c *gin.Context) {
+func (h *UserHandler) ListUsers(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	size, _ := strconv.Atoi(c.DefaultQuery("size", "5"))
 	data := User.Paginate(page, size)
@@ -20,7 +25,7 @@ func ListUsers(c *gin.Context) {
 }
 
 // CreateUser action
-func CreateUser(c *gin.Context) {
+func (h *UserHandler) CreateUser(c *gin.Context) {
 	var params CreateUserParam
 	if err := c.ShouldBindJSON(&params); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "Bad Request"})
@@ -31,7 +36,7 @@ func CreateUser(c *gin.Context) {
 }
 
 // GetUser action
-func GetUser(c *gin.Context) {
+func (h *UserHandler) GetUser(c *gin.Context) {
 	id := c.Param("id")
 
 	// Redis

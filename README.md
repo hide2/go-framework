@@ -2,7 +2,7 @@
 
 ## Features
 - Router
-- Controller & Model
+- Handler & Model
 - RESTful JSON API
 - MySQL/Redis
 - Read/Write Splitting
@@ -19,13 +19,13 @@
 mysql -uroot -proot < sql/test.sql
 
 # local
-go run server.go
+go run cmd/app/server.go
 
 or
 
 # build
 ./build.sh
-./server -c config.json
+./server -c config/config.json
 
 # test
 curl -v http://localhost:8080/health
@@ -33,34 +33,38 @@ curl -X POST -H "Content-Type: application/json" -d '{"name": "Andy"}'  -v http:
 curl -X POST -H "Content-Type: application/json" -d '{"name": "Calvin"}'  -v http://localhost:8080/api/v1/users
 curl -v http://localhost:8080/api/v1/users?page=1
 curl -v http://localhost:8080/api/v1/users/1
+
+# Benchmark
+cd test
+./wrk.sh
 ```
 
-## Routes
-routes/config.go
+## Router
+cmd/app/router/router.go
 ```
-	router.GET("/health", func(c *gin.Context) {
+	engine.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "ok"})
 	})
-	router.GET("/error", func(c *gin.Context) {
+
+	engine.GET("/error", func(c *gin.Context) {
 		panic("Error")
 	})
 
-	api := router.Group("/api")
+	api := engine.Group("/api")
 	{
 		v1 := api.Group("/v1")
 		{
-			v1.GET("/hello", controller.Hello)
+			v1.GET("/hello", new(handler.HelloHandler).Hello)
 
-			v1.GET("/users", controller.ListUsers)
-			v1.POST("/users", controller.CreateUser)
-			v1.GET("/users/:id", controller.GetUser)
+			v1.GET("/users", new(handler.UserHandler).ListUsers)
+			v1.POST("/users", new(handler.UserHandler).CreateUser)
+			v1.GET("/users/:id", new(handler.UserHandler).GetUser)
 		}
-
 	}
 ```
 
 ## Config
-config.json
+config/config.json
 ```
 {
     "env": "local",
@@ -78,12 +82,11 @@ config.json
 
 ## Structure
 ```
-controller  // Controller
-model       // Model
-routes      // Routes
-libs        // Libraries
-sql         // Database init script
-build.sh    // Build script
-config.json // Configuration
-server.go   // Main file
+cmd/app/router/handler   // Handler
+cmd/app/router/router.go // Router
+config/config.json       // Config
+internal                 // Biz & Data
+pkg                      // Libs
+sql                      // Database init script
+build.sh                 // Build script
 ```

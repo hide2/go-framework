@@ -27,7 +27,7 @@ var GlobalConfig *Config
 func init() {
 	// 解析命令行参数
 	var configFile string
-	flag.StringVar(&configFile, "c", "config.json", "set configuration `file`")
+	flag.StringVar(&configFile, "c", "config/config.json", "set configuration `file`")
 	flag.Parse()
 
 	// 加载配置文件config.json

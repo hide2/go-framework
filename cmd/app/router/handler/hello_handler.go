@@ -1,14 +1,18 @@
-package controller
+package handler
 
 import (
 	"net/http"
-	"server/libs/logger"
+	"server/pkg/logger"
 
 	"github.com/gin-gonic/gin"
 )
 
+type HelloHandler struct {
+	BaseHandler
+}
+
 // Hello action
-func Hello(c *gin.Context) {
+func (h *HelloHandler) Hello(c *gin.Context) {
 	logger.Debug("Hello")
 	logger.Infof("Hello: %d %s", 123, "name")
 	logger.Warn("Hello", 123, []int{1, 2, 3})

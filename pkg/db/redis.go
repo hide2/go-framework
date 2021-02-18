@@ -3,7 +3,7 @@ package db
 import (
 	"context"
 
-	. "server/libs/config"
+	. "server/pkg/config"
 
 	"github.com/go-redis/redis/v8"
 )

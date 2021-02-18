@@ -8,5 +8,5 @@
     "redis": "localhost:6379",
     "accesslog": "/tmp/access.log",
     "errorLog": "/tmp/error.log",
-    "errorDingTalk": ""
+    "errorDingTalk": "https://oapi.dingtalk.com/robot/send?access_token=xxx"
 }

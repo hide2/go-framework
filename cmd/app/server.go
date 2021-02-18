@@ -2,10 +2,10 @@ package main
 
 import (
 	"os"
-	"server/libs/auth"
-	. "server/libs/config"
-	"server/libs/logger"
-	"server/routes"
+	"server/cmd/app/router"
+	"server/pkg/auth"
+	. "server/pkg/config"
+	"server/pkg/logger"
 
 	"github.com/gin-gonic/gin"
 )
@@ -36,7 +36,7 @@ func main() {
 	engine.Use(logger.GinRecovery())
 
 	// 路由配置
-	routes.InitRoutes(engine)
+	router.InitRoutes(engine)
 
 	// 启动服务器
 	logger.Infof("Server Started with env: %s, listen: %s", GlobalConfig.Env, GlobalConfig.Listen)

@@ -1,7 +1,7 @@
 package model
 
 import (
-	. "server/libs/db"
+	. "server/pkg/db"
 	"time"
 )
 

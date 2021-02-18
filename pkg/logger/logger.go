@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"runtime/debug"
-	. "server/libs/config"
+	. "server/pkg/config"
 	"time"
 
 	"github.com/gin-gonic/gin"

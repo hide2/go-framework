@@ -3,7 +3,7 @@ package db
 import (
 	"log"
 	"os"
-	. "server/libs/config"
+	. "server/pkg/config"
 	"time"
 
 	"gorm.io/driver/mysql"
