@@ -34,7 +34,7 @@ curl -X POST -H "Content-Type: application/json" -d '{"name": "Calvin"}'  -v htt
 curl -v http://localhost:8080/api/v1/users?page=1
 curl -v http://localhost:8080/api/v1/users/1
 
-# Benchmark
+# benchmark
 cd test
 ./wrk.sh
 ```
