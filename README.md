@@ -37,6 +37,13 @@ curl -v http://localhost:8080/api/v1/users/1
 # benchmark
 cd test
 ./wrk.sh
+
+# profiling
+go tool pprof http://localhost:8080/debug/pprof/goroutine\?second\=20
+top10
+
+brew install graphviz
+go tool pprof -http=:8081 xxx/pprof.goroutine.001.pb.gz
 ```
 
 ## Router

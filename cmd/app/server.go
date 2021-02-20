@@ -7,6 +7,7 @@ import (
 	. "server/pkg/config"
 	"server/pkg/logger"
 
+	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,6 +27,11 @@ func main() {
 	// New Engine
 	engine := gin.New()
 
+	// Profiling
+	if GlobalConfig.Env == "local" || GlobalConfig.Env == "dev" || GlobalConfig.Env == "test" {
+		pprof.Register(engine)
+	}
+
 	// Middleware: Auth
 	engine.Use(auth.Auth())
 
@@ -36,7 +42,7 @@ func main() {
 	engine.Use(logger.GinRecovery())
 
 	// 路由配置
-	router.InitRoutes(engine)
+	router.Register(engine)
 
 	// 启动服务器
 	logger.Infof("Server Started with env: %s, listen: %s", GlobalConfig.Env, GlobalConfig.Listen)

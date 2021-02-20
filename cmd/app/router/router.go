@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func InitRoutes(engine *gin.Engine) {
+func Register(engine *gin.Engine) {
 
 	engine.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"code": 200, "msg": "ok"})
